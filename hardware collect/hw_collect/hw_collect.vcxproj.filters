@@ -28,6 +28,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="wmi.h">
+      <Filter>hardware</Filter>
+    </ClInclude>
+    <ClInclude Include="smbios.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -39,6 +42,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="wmi.cpp">
+      <Filter>hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="smbios.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
