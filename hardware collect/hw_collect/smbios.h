@@ -13,6 +13,10 @@ public:
 public:
 	bool Initialize();
 
+	bool FindFirstTargetType(size_t *index, const BYTE type) const;
+
+	bool FindNextTargetType(size_t *index, const BYTE type)  const;
+
 private:
 	SMBIOS(const SMBIOS&);
 	void operator=(const SMBIOS&);

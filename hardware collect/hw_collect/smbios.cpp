@@ -1,9 +1,11 @@
 #include "smbios.h"
+#include <algorithm>
 #include <assert.h>
 #include "wmi.h"
 
 SMBIOS::SMBIOS()
-	: smbios_pointer_(nullptr), smbios_data_size_(0), smbios_version_major_(0), smbios_version_minor_(0)
+	: smbios_pointer_(nullptr), smbios_data_size_(0),
+	  smbios_version_major_(0), smbios_version_minor_(0)
 {}
 
 SMBIOS::~SMBIOS()
@@ -83,4 +85,39 @@ WORD SMBIOS::GetTableRealSize(const BYTE *data, const BYTE data_size)
 		res_size += 1;
 
 	return res_size + 2;
+}
+
+bool SMBIOS::FindFirstTargetType(size_t *index, const BYTE type) const
+{
+	assert(smbios_pointer_ != nullptr);
+	assert(index != nullptr);
+
+	for (size_t i = 0; i != smbios_table_.size(); ++i)
+	{
+		if (smbios_table_[i].type == type)
+		{
+			*index = i;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool SMBIOS::FindNextTargetType(size_t *index, const BYTE type) const
+{
+	assert(smbios_pointer_ != nullptr);
+	assert(index != nullptr);
+	assert(*index >= 0 && *index < smbios_table_.size());
+
+	for (size_t i = *index; i != smbios_table_.size(); ++i)
+	{
+		if (smbios_table_[i].type == type)
+		{
+			*index = i;
+			return true;
+		}
+	}
+
+	return false;
 }

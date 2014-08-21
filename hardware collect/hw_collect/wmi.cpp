@@ -103,7 +103,7 @@ bool WMI::InitSecurity()
 	HRESULT hr = CoInitializeSecurity(NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_DEFAULT,
 								RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE, NULL);
 
-	return (hr != RPC_E_TOO_LATE && FAILED(hr));
+	return (SUCCEEDED(hr) || hr == RPC_E_TOO_LATE);
 }
 
 bool WMI::CreateInstance()
