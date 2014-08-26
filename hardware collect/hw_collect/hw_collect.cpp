@@ -3,12 +3,19 @@
 
 #include "stdafx.h"
 #include "smbios.h"
+#include "baseboard.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	SMBIOS smbios;
+	printf("SMBIOS Ver:%d.%d \n", SMBIOS::Intance().smbios_version_major_, SMBIOS::Intance().smbios_version_minor_);
 
-	smbios.Initialize();
+	BaseBoard bb;
+	printf("%s ",   bb.GetManufacturer());
+	printf("%s\n",  bb.GetProduct());
+
+	printf("%s ",	bb.GetBIOSVendor());
+	printf("%s\n",	bb.GetBIOSVersion());
+	printf("%s\n",	bb.GetBIOSDate());
 
 	return 0;
 }

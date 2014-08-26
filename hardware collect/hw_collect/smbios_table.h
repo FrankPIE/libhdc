@@ -13,14 +13,6 @@ const BYTE SLOTS_TYPE9		= 0x09;
 const BYTE MEMARRAY_TYPE16	= 0x10;
 const BYTE MEMDEVIC_TYPE17	= 0x11;
 
-struct TableInfo
-{
-	BYTE	type;
-	BYTE	data_size;
-	WORD	real_size;
-	DWORD	offset;
-};
-
 //---------------------------------------------------------------------------------------------//
 /************************************************************************/
 /*				TYPE	0 TABLE BIOS INFO                               */
@@ -153,7 +145,7 @@ enum Table21
 /************************************************************************/
 enum Table22
 {
-	UNKNOWEN				 = 0x01,
+	UNKNOWN22				 = 0x01,
 	OTHER					 = 0x02,
 	SERVER_BLADE			 = 0x03,
 	CONNECTIVITY_SWITCH		 = 0x04,

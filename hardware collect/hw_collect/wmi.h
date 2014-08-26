@@ -37,10 +37,10 @@ private:
 	bool SetProxyBlanket();
 
 private:
-	IWbemClassObject		*wbem_object_;
-	IEnumWbemClassObject	*wbem_enum_result_;
-	IWbemLocator			*wbem_locator_;
-	IWbemServices			*wbem_services_;
+	IWbemClassObject		*wbem_object_pointer_;
+	IEnumWbemClassObject	*wbem_enum_result_pointer_;
+	IWbemLocator			*wbem_locator_pointer_;
+	IWbemServices			*wbem_services_pointer_;
 };
 
 #endif // !_WMI_H_

@@ -3,22 +3,29 @@
 #include <assert.h>
 #include "wmi.h"
 
+
+SMBIOS& SMBIOS::Intance()
+{
+	static SMBIOS smbios;
+	return smbios;
+}
+
 SMBIOS::SMBIOS()
 	: smbios_pointer_(nullptr), smbios_data_size_(0),
 	  smbios_version_major_(0), smbios_version_minor_(0)
-{}
+{
+	Initialize();
+}
 
 SMBIOS::~SMBIOS()
 {}
 
-bool SMBIOS::Initialize()
+void SMBIOS::Initialize()
 {
 	if (!GetVersionAndData())
-		return false;
+		return;
 
 	EnumEachTable();
-
-	return true;
 }
 
 bool SMBIOS::GetVersionAndData()
@@ -57,6 +64,11 @@ bool SMBIOS::GetVersionAndData()
 	return false;
 }
 
+const BYTE SMBIOS::GetTypeCount(const BYTE type) const
+{
+	return count_if(smbios_table_.begin(), smbios_table_.end(), TableInfo(type));
+}
+
 void SMBIOS::EnumEachTable()
 {
 	assert(smbios_pointer_ != nullptr);
@@ -66,12 +78,12 @@ void SMBIOS::EnumEachTable()
 
 	while (index < smbios_data_size_)
 	{
-		table.offset	= index;
-		table.type		= smbios_pointer_[index];
-		table.data_size = smbios_pointer_[index + 1];
-		table.real_size = GetTableRealSize(&smbios_pointer_[index], table.data_size);
+		table._offset	 = index;
+		table._type		 = smbios_pointer_[index];
+		table._data_size = smbios_pointer_[index + 1];
+		table._real_size = GetTableRealSize(&smbios_pointer_[index], table._data_size);
 
-		index += table.real_size;
+		index += table._real_size;
 
 		smbios_table_.push_back(table);
 	}
@@ -82,42 +94,62 @@ WORD SMBIOS::GetTableRealSize(const BYTE *data, const BYTE data_size)
 	WORD res_size = data_size;
 
 	while (*(LPWORD(data + res_size)) != 0)
-		res_size += 1;
+		++res_size;
 
 	return res_size + 2;
 }
 
-bool SMBIOS::FindFirstTargetType(size_t *index, const BYTE type) const
+bool SMBIOS::FindFirstTargetType(const BYTE type)
 {
 	assert(smbios_pointer_ != nullptr);
-	assert(index != nullptr);
 
-	for (size_t i = 0; i != smbios_table_.size(); ++i)
-	{
-		if (smbios_table_[i].type == type)
-		{
-			*index = i;
-			return true;
-		}
-	}
+	smbios_index_iter_ = find_if(smbios_table_.begin(), smbios_table_.end(), TableInfo(type));
 
-	return false;
+	return (smbios_index_iter_ != smbios_table_.end());
 }
 
-bool SMBIOS::FindNextTargetType(size_t *index, const BYTE type) const
+bool SMBIOS::FindNextTargetType()
 {
 	assert(smbios_pointer_ != nullptr);
-	assert(index != nullptr);
-	assert(*index >= 0 && *index < smbios_table_.size());
 
-	for (size_t i = *index; i != smbios_table_.size(); ++i)
+	if (smbios_index_iter_ == smbios_table_.end())
+		return false;
+
+	smbios_index_iter_ = find_if(smbios_index_iter_ + 1, smbios_table_.end(), TableInfo(smbios_index_iter_->_type));
+
+	return (smbios_index_iter_ != smbios_table_.end());
+}
+
+void SMBIOS::FillDataFeild(void *dst, const size_t size, const BYTE id)
+{
+	BYTE *pointer = smbios_pointer_ + smbios_index_iter_->_offset;
+
+	assert(id > 0 && id < smbios_index_iter_->_data_size);
+
+	memcpy(dst, pointer + id, size);
+}
+
+void SMBIOS::FilStringFeild(void **dst, const BYTE id)
+{
+	BYTE *pointer = smbios_pointer_ + smbios_index_iter_->_offset;
+
+	assert(id > 0 && id < smbios_index_iter_->_data_size);
+
+	BYTE index = 1;
+	BYTE str_index = pointer[id];
+	BYTE *str_index_pointer = pointer + smbios_index_iter_->_data_size;
+
+	while (str_index_pointer != pointer + smbios_index_iter_->_real_size)
 	{
-		if (smbios_table_[i].type == type)
+		if (index == str_index)
 		{
-			*index = i;
-			return true;
+			*dst = str_index_pointer;
+			return;
 		}
-	}
 
-	return false;
+		if (*str_index_pointer == '\0')
+			++index;
+
+		++str_index_pointer;
+	}
 }

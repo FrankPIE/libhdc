@@ -81,6 +81,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="baseboard.h" />
     <ClInclude Include="smbios.h" />
     <ClInclude Include="smbios_table.h" />
     <ClInclude Include="stdafx.h" />
@@ -88,6 +89,7 @@
     <ClInclude Include="wmi.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="baseboard.cpp" />
     <ClCompile Include="hw_collect.cpp" />
     <ClCompile Include="smbios.cpp" />
     <ClCompile Include="stdafx.cpp" />

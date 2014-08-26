@@ -30,8 +30,14 @@
     <ClInclude Include="wmi.h">
       <Filter>hardware</Filter>
     </ClInclude>
+    <ClInclude Include="smbios_table.h">
+      <Filter>hardware</Filter>
+    </ClInclude>
     <ClInclude Include="smbios.h">
-      <Filter>头文件</Filter>
+      <Filter>hardware</Filter>
+    </ClInclude>
+    <ClInclude Include="baseboard.h">
+      <Filter>hardware</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -45,7 +51,10 @@
       <Filter>hardware</Filter>
     </ClCompile>
     <ClCompile Include="smbios.cpp">
-      <Filter>源文件</Filter>
+      <Filter>hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="baseboard.cpp">
+      <Filter>hardware</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
