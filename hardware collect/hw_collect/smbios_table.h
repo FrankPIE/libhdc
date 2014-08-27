@@ -145,7 +145,7 @@ enum Table21
 /************************************************************************/
 enum Table22
 {
-	UNKNOWN22				 = 0x01,
+	UNKNOWN_22				 = 0x01,
 	OTHER					 = 0x02,
 	SERVER_BLADE			 = 0x03,
 	CONNECTIVITY_SWITCH		 = 0x04,
@@ -161,4 +161,180 @@ enum Table22
 };
 //////////////////////////////////////////////////////////////////////////
 //---------------------------------------------------------------------------------------------//
+struct MemoryArrayType16
+{
+	BYTE	  location;								
+	BYTE	  use;									
+	BYTE	  mem_error_corect;							
+	DWORD	  max_capacity;							
+	WORD	  mem_error_info_handle;						
+	WORD	  number_of_memory_dev;							
+	UINT64	  extended_max_capacity;					
+};
+//////////////////////////////////////////////////////////////////////////
+
+/************************************************************************/
+/*				TYPE	16.1 TABLE  Location Field						*/
+/************************************************************************/
+enum Table161
+{
+	LOCATION_OTHER				= 0x01,
+	LOCATION_UNKNOWN			= 0x02,
+	LOCATION_SYS_OR_MOTHER		= 0x03,
+	LOCATION_ISA_ADD			= 0x04,
+	LOCATION_EISA_ADD			= 0x05,
+	LOCATION_PCI_ADD			= 0x06,
+	LOCATION_MCA_ADD			= 0x07,
+	LOCATION_PCMCIA_ADD			= 0x08,
+	LOCATION_PROPRIETY_ADD		= 0x09,
+	LOCATION_NUBUS				= 0x0A,
+	LOCATION_PC98_C20_ADD		= 0xA0,
+	LOCATION_PC98_C24_ADD		= 0xA1,
+	LOCATION_PC98_E_ADD			= 0xA2,
+	LOCATION_PC98_LOCALBUS_ADD  = 0xA3
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+/************************************************************************/
+/*				TYPE	16.2 TABLE  Use Field							*/
+/************************************************************************/
+enum Table162
+{
+	USE_OTHER			 = 0x01,
+	USE_UNKNOWN			 = 0x02,
+	USE_SYS_MEM			 = 0x03,
+	USE_VEDIO_MEM		 = 0x04,
+	USE_FLASH_MEM		 = 0x05,
+	USE_NON_VOLATILE_RAM = 0x06,
+	USE_CHCHE_MEMORY	 = 0x07
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+/************************************************************************/
+/*				TYPE	16.3 TABLE  Error Collection Types Field		*/
+/************************************************************************/
+enum Table163
+{
+	ERRC_OTHER		= 0x01,
+	ERRC_UNKNOWN	= 0x02,
+	ERRC_NONE		= 0x03,
+	ERRC_PARITY		= 0x04,
+	ERRC_SIG_B_ECC  = 0x05,
+	ERRC_MULT_B_ECC = 0x06,
+	ERRC_CRC		= 0x07
+};
+//////////////////////////////////////////////////////////////////////////
+
+//---------------------------------------------------------------------------------------------//
+struct MemoryDeviceType17
+{
+	WORD	  physical_memory_array_handle;								
+	WORD	  mem_error_info_handle;									
+	WORD	  total_width;										
+	WORD	  data_width;										
+	WORD	  size;												
+	BYTE      form_factor;										
+	BYTE	  device_set;										
+	LPSTR     device_locator;		
+	LPSTR     bank_locator;			
+	BYTE	  memory_type;											
+	WORD	  type_detail;										
+	WORD	  speed;											
+	LPSTR     manufacturer;
+	LPSTR     serial_num;			
+	LPSTR     asset_tag;			
+	LPSTR     part_number;				
+	BYTE	  attributes;										
+	DWORD	  extended_size;									
+	WORD	  configured_memory_clk_speed;						
+	WORD	  min_voltage;										
+	WORD	  max_voltage;										
+	WORD	  configured_voltage;								
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+
+/************************************************************************/
+/*				TYPE	17.1 TABLE  Form Factor Field					*/
+/************************************************************************/
+enum Table171
+{
+	FF_OTHER		= 0x01,
+	FF_UNKOWN		= 0x02,
+	FF_SIMM			= 0x03,
+	FF_SIP			= 0x04,
+	FF_CHIP			= 0x05,
+	FF_DIP			= 0x06,
+	FF_ZIP			= 0x07,
+	FF_PROCARD		= 0x08,
+	FF_DIMM			= 0x09,
+	FF_TSOP			= 0x0A,
+	FF_ROW_OF_CHIPS = 0x0B,
+	FF_RIMM			= 0x0C,
+	FF_SODIMM		= 0x0D,
+	FF_SRIMM		= 0x0E,
+	FF_FB_DIMM		= 0x0F
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+/************************************************************************/
+/*				TYPE	17.2 TABLE  Type								*/
+/************************************************************************/
+enum Table172
+{
+	TYPE_OTHER = 0x01,
+	TYPE_UNKNOWN = 0x02,
+	TYPE_DRAM = 0x03,
+	TYPE_EDRAM = 0x04,
+	TYPE_VRAM = 0x05,
+	TYPE_SRAM = 0x06,
+	TYPE_RAM = 0x07,
+	TYPE_ROM = 0x08,
+	TYPE_FLASH = 0x09,
+	TYPE_EEPROM = 0x0A,
+	TYPE_FEPROM = 0x0B,
+	TYPE_EPROM = 0x0C,
+	TYPE_CDRAM = 0x0D,
+	TYPE_3DRAM = 0x0E,
+	TYPE_SDRAM = 0x0F,
+	TYPE_SGRAM = 0x10,
+	TYPE_RDRAM = 0x11,
+	TYPE_DDR = 0x12,
+	TYPE_DDR2 = 0x13,
+	TYPE_DDR2_FB_DIMM = 0x14,
+	TYPE_RESERVED1 = 0x15,
+	TYPE_RESERVED2 = 0x16,
+	TYPE_RESERVED3 = 0x17,
+	TYPE_DDR3 = 0x18,
+	TYPE_FBD2 = 0x19
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+/************************************************************************/
+/*				TYPE	17.3 TABLE  Type Detail Field					*/
+/************************************************************************/
+enum Table173
+{
+	TD_RESERVED = 0x00,
+	TD_OTHER = 0x02,
+	TD_UNKNOWN = 0x04,
+	TD_FAST_PAGED = 0x08,
+	TD_STATIC_COLUMN = 0x10,
+	TD_PSEUDO_STATIC = 0x20,
+	TD_RAMBUS = 0x40,
+	TD_SYNCHRONOUS = 0x80,
+	TD_CMOS = 0x100,
+	TD_EDO = 0x200,
+	TD_WINDOW_DRAM = 0x400,
+	TD_CACHE_DRAM = 0x800,
+	TD_NON_VOLATILE = 0x1000,
+	TD_REGISTERED = 0x2000,
+	TD_UNBUFFERED = 0x4000,
+	TD_LRDIMM = 0x8000
+};
 #endif // !_SMBIOS_TABLE_H_

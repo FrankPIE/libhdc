@@ -10,12 +10,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	printf("SMBIOS Ver:%d.%d \n", SMBIOS::Intance().smbios_version_major_, SMBIOS::Intance().smbios_version_minor_);
 
 	BaseBoard bb;
-	printf("%s ",   bb.GetManufacturer());
+	printf("Base Board : %s ",   bb.GetManufacturer());
 	printf("%s\n",  bb.GetProduct());
 
-	printf("%s ",	bb.GetBIOSVendor());
+	printf("BIOS : %s ",	bb.GetBIOSVendor());
 	printf("%s\n",	bb.GetBIOSVersion());
-	printf("%s\n",	bb.GetBIOSDate());
+	printf("Release Date : %s\n",	bb.GetBIOSDate());
 
 	return 0;
 }

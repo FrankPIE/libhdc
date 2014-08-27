@@ -36,7 +36,7 @@ bool BaseBoard::GetBIOS()
 
 void BaseBoard::SetBoardType()
 {
-	board_type_[UNKNOWN22]				  = "Unknown";
+	board_type_[UNKNOWN_22]				  = "Unknown";
 	board_type_[OTHER]					  = "Other";
 	board_type_[SERVER_BLADE]		      = "ServerBlade";
 	board_type_[CONNECTIVITY_SWITCH]      = "ConnectivitySwitch";
