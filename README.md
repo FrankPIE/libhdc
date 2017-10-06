@@ -1,4 +1,3 @@
-SMBIOS
-======
+# SMBIOS
 
- windows system hardware information collect
+Win32 hardware information collect
