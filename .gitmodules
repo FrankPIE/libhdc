@@ -1,0 +1,3 @@
+[submodule "cmake/Concrete"]
+	path = cmake/Concrete
+	url = https://github.com/FrankPIE/Concrete.git
