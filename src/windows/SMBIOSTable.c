@@ -36,6 +36,16 @@ typedef struct _WbemStructure
 	IWbemServices*			services_ptr;
 } WbemStructure;
 
+struct _SMBIOSTable
+{
+	uint8_t		type;
+	uint32_t	offset;
+	uint8_t		data_size;
+	uint16_t	real_size;
+	
+	struct _SMBIOSTable* next;
+};
+
 struct _SMBIOSTableData
 {
 	uint8_t   version_major;
@@ -188,15 +198,17 @@ void wmi_destroy(WbemStructure* wmi_object)
 	HDC_COM_PTR_RELEASE(wmi_object->locator_ptr);
 	HDC_COM_PTR_RELEASE(wmi_object->services_ptr);
 
+	free(wmi_object);
+	
 	kWMIInitialize = 0;
 }
 
-int HDC_CALLBACK_API hdc_smbios_find_rom(SMBIOSTableData* table_data)
+int HDC_CALLBACK_API hdc_smbios_init(SMBIOSTableData** table_data)
 {
 	int enumerate_result = 0;
 	WbemStructure* wbem = NULL;
 
-	assert(table_data != NULL);
+	*table_data = (SMBIOSTableData*)malloc(sizeof(SMBIOSTableData));
 
 	if (!wmi_init(&wbem))
 		return 0;
@@ -211,10 +223,10 @@ int HDC_CALLBACK_API hdc_smbios_find_rom(SMBIOSTableData* table_data)
 		struct tagVARIANT value;
 
 		wmi_get_result(wbem, L"SmbiosMajorVersion", &value, NULL);
-		table_data->version_major = value.bVal;
+		(*table_data)->version_major = value.bVal;
 
 		wmi_get_result(wbem, L"SmbiosMinorVersion", &value, NULL);
-		table_data->version_minor = value.bVal;
+		(*table_data)->version_minor = value.bVal;
 
 		wmi_get_result(wbem, L"SMBiosData", &value, NULL);
 
@@ -222,11 +234,18 @@ int HDC_CALLBACK_API hdc_smbios_find_rom(SMBIOSTableData* table_data)
 
 		SAFEARRAY* safe_array = V_ARRAY(&value);
 
-		table_data->smbios_buffer = (uint8_t*)(safe_array->pvData);
-		table_data->smbios_buffer_size = safe_array->rgsabound[0].cElements;
+		(*table_data)->smbios_buffer = (uint8_t*)(safe_array->pvData);
+		(*table_data)->smbios_buffer_size = safe_array->rgsabound[0].cElements;
 	}
 
 	wmi_destroy(wbem);
 
 	return enumerate_result;
+}
+
+void HDC_CALLBACK_API hdc_smbios_destroy(SMBIOSTableData* table_data)
+{
+	assert(table_data != NULL);
+
+	free(table_data);
 }

@@ -28,8 +28,10 @@ extern "C" {
 
 typedef struct _SMBIOSTableData SMBIOSTableData;
 
-int HDC_CALLBACK_API hdc_smbios_find_rom(SMBIOSTableData* table_data);
-	
+int HDC_CALLBACK_API  hdc_smbios_init(SMBIOSTableData** table_data);
+
+void HDC_CALLBACK_API hdc_smbios_destroy(SMBIOSTableData* table_data);
+
 #if defined(__cplusplus)
 }
 #endif
