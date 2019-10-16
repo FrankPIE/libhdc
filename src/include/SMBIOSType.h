@@ -9,7 +9,7 @@
 * ¡¡¡¡
 * The above copyright notice and this permission notice shall be included in all copies or substantial
 * portions of the Software.
-
+* 
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
 * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
@@ -125,6 +125,37 @@ enum Table02
 };
 //////////////////////////////////////////////////////////////////////////
 //---------------------------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------------------------//
+/************************************************************************/
+/*				TYPE	1 TABLE SYSTEM INFO								*/
+/************************************************************************/
+struct SystemInformationType1
+{
+	char*		manufacturer;		// 0x04
+	char*		product_name;		// 0x05
+	char*		version;			// 0x06
+	uint8_t     uuid[16];			// 0x08
+	uint8_t		wakeup_type;		// 0x18
+	char*		sku_number;			// 0x19
+	uint8_t		family;				// 0x1A
+};
+
+//---------------------------------------------------------------------------------------------//
+
+// Wake up type field
+enum Table11
+{
+	T11_RESERVED = 0x00,
+	T11_OTHER = 0x01,
+	T11_UNKNOWN = 0x02,
+	T11_APM_TIMER = 0x03,
+	T11_MODEM_RING = 0x04,
+	T11_LAN_REMOTE = 0x05,
+	T11_POWER_SWITCH = 0x06,
+	T11_PCI_PME_SHARP = 0x07,
+	T11_AC_POWER_RESTORED = 0x08
+};
 
 //---------------------------------------------------------------------------------------------//
 /************************************************************************/

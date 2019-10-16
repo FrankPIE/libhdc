@@ -9,7 +9,7 @@
 * ¡¡¡¡
 * The above copyright notice and this permission notice shall be included in all copies or substantial 
 * portions of the Software.
-
+* 
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
 * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
 * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
@@ -17,9 +17,21 @@
 * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
 */
 
-#ifndef _HDC_WINDOWS_SMBIOS_TABLE_H_
-#define _HDC_WINDOWS_SMBIOS_TABLE_H_
+#ifndef _HDC_SMBIOS_TABLE_H_
+#define _HDC_SMBIOS_TABLE_H_
 
+#include <HDCConfig.h>
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+typedef struct _SMBIOSTableData SMBIOSTableData;
+
+int HDC_CALLBACK_API hdc_smbios_find_rom(SMBIOSTableData* table_data);
+	
+#if defined(__cplusplus)
+}
+#endif
 
 #endif 
