@@ -20,6 +20,8 @@
 #ifndef _HDC_SMBIOS_TABLE_H_
 #define _HDC_SMBIOS_TABLE_H_
 
+#include <stdint.h>
+
 #include <HDCConfig.h>
 
 #if defined(__cplusplus)
@@ -28,7 +30,24 @@ extern "C" {
 
 typedef struct _SMBIOSTableData SMBIOSTableData;
 
+typedef struct _SMBIOS_UUID
+{
+	uint8_t uuid[16];
+} SMBIOS_UUID;
+
 int HDC_CALLBACK_API  hdc_smbios_init(SMBIOSTableData** table_data);
+
+const char* HDC_CALLBACK_API hdc_smbios_bios_vendor(SMBIOSTableData* table_data);
+
+const char* HDC_CALLBACK_API hdc_smbios_bios_version(SMBIOSTableData* table_data);
+
+const char* HDC_CALLBACK_API hdc_smbios_bios_release_date(SMBIOSTableData* table_data);
+
+int HDC_CALLBACK_API hdc_smbios_system_uuid(SMBIOSTableData* table_data, SMBIOS_UUID* uuid);
+
+const char* HDC_CALLBACK_API hdc_smbios_baseboard_manufacturer(SMBIOSTableData* table_data);
+
+const char* HDC_CALLBACK_API hdc_smbios_baseboard_product(SMBIOSTableData* table_data);
 
 void HDC_CALLBACK_API hdc_smbios_destroy(SMBIOSTableData* table_data);
 
