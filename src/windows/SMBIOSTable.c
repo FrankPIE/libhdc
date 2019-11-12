@@ -21,6 +21,7 @@
 
 #include <assert.h>
 
+#include <windows.h>
 #include <WbemIdl.h>
 
 #include <ComPtr.h>
@@ -49,13 +50,21 @@ struct _SMBIOSTable
 	struct _SMBIOSTable* next;
 };
 
+struct RawSMBIOSData
+{
+	BYTE    Used20CallingMethod;
+	BYTE    SMBIOSMajorVersion;
+	BYTE    SMBIOSMinorVersion;
+	BYTE    DmiRevision;
+	DWORD   Length;
+	BYTE    SMBIOSTableData[1];
+};
+
 struct _SMBIOSTableData
 {
-	uint8_t   version_major;
-	uint8_t   version_minor;
-
+	struct RawSMBIOSData* data;
+	
 	uint8_t*  smbios_buffer;
-	uint32_t  smbios_buffer_size;
 
 	struct _SMBIOSTable* table_index;
 
@@ -74,6 +83,10 @@ static int  wmi_get_result(WbemStructure* wmi_object, LPCWSTR field, struct tagV
 
 static void wmi_destroy(WbemStructure* wmi_object);
 
+static int smbios_init_use_wmi(SMBIOSTableData** table_data);
+
+static int smbios_init_use_win32_api(SMBIOSTableData** table_data);
+
 static int smbios_find_first_target_type(SMBIOSTableData* table_data, uint8_t target_type);
 
 static int smbios_find_next_target_type(SMBIOSTableData* table_data);
@@ -81,6 +94,10 @@ static int smbios_find_next_target_type(SMBIOSTableData* table_data);
 static void smbios_get_data_field(SMBIOSTableData* table_data, void** dst, uint8_t id);
 
 static const char* smbios_get_string_field(SMBIOSTableData* table_data, uint8_t id);
+
+static void smbios_collect_string_array(uint8_t* data_buffer, struct _SMBIOSTable* node);
+
+static void smbios_create_table_list(SMBIOSTableData* table_data);
 
 int wmi_init(WbemStructure** wmi_object)
 {
@@ -223,6 +240,90 @@ void wmi_destroy(WbemStructure* wmi_object)
 	kWMIInitialize = 0;
 }
 
+int smbios_init_use_wmi(SMBIOSTableData** table_data)
+{
+	if (*table_data)
+	{
+		int enumerate_result = 0;
+		WbemStructure* wbem = NULL;
+
+		(*table_data)->data = (struct RawSMBIOSData*)malloc(sizeof(struct RawSMBIOSData));
+		(*table_data)->table_list = NULL;
+		(*table_data)->table_index = NULL;
+
+		if ((*table_data)->data)
+		{
+			if (!wmi_init(&wbem))
+				return 0;
+
+			if (!wmi_execute_query(wbem, L"select * from MSSMBios_RawSMBiosTables"))
+				return 0;
+
+			enumerate_result = wmi_get_enumerate(wbem);
+
+			if (enumerate_result)
+			{
+				struct tagVARIANT value;
+
+				wmi_get_result(wbem, L"SmbiosMajorVersion", &value, NULL);
+				(*table_data)->data->SMBIOSMajorVersion = value.bVal;
+
+				wmi_get_result(wbem, L"SmbiosMinorVersion", &value, NULL);
+				(*table_data)->data->SMBIOSMinorVersion = value.bVal;
+
+				wmi_get_result(wbem, L"SMBiosData", &value, NULL);
+
+				assert((VT_UI1 | VT_ARRAY) == value.vt);
+
+				SAFEARRAY* safe_array = V_ARRAY(&value);
+
+				(*table_data)->smbios_buffer = (uint8_t*)(safe_array->pvData);
+				(*table_data)->data->Length = safe_array->rgsabound[0].cElements;
+
+				smbios_create_table_list(*table_data);
+			}
+
+			wmi_destroy(wbem);
+
+			return enumerate_result;
+		}
+	}
+
+	return 0;
+}
+
+int smbios_init_use_win32_api(SMBIOSTableData** table_data)
+{
+	if (*table_data)
+	{
+		DWORD bios_data_size = 0;
+		DWORD bytes_written = 0;
+		
+		(*table_data)->data = NULL;
+		(*table_data)->smbios_buffer = NULL;
+		(*table_data)->table_list = NULL;
+		(*table_data)->table_index = NULL;
+
+		bios_data_size = GetSystemFirmwareTable('RSMB', 0, NULL, 0);
+
+		(*table_data)->data = (struct RawSMBIOSData*)malloc(bios_data_size);		
+		
+		if ((*table_data)->data)
+		{			
+			bytes_written = GetSystemFirmwareTable('RSMB', 0, (*table_data)->data, bios_data_size);
+
+			if (bytes_written != bios_data_size)
+				return 0;
+
+			smbios_create_table_list(*table_data);
+						
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
 int smbios_find_first_target_type(SMBIOSTableData* table_data, uint8_t target_type)
 {
 	assert(table_data != NULL);
@@ -252,11 +353,11 @@ int smbios_find_next_target_type(SMBIOSTableData* table_data)
 	return table_data->table_index != NULL;
 }
 
-void smbios_collect_string_array(SMBIOSTableData* table_data, struct _SMBIOSTable* node)
+void smbios_collect_string_array(uint8_t* data_buffer, struct _SMBIOSTable* node)
 {
 	size_t index = 0;
 	
-	uint8_t* begin = table_data->smbios_buffer + node->offset;
+	uint8_t* begin = data_buffer + node->offset;
 
 	begin += node->data_size - 1;
 
@@ -271,11 +372,58 @@ void smbios_collect_string_array(SMBIOSTableData* table_data, struct _SMBIOSTabl
 	}
 }
 
+void smbios_create_table_list(SMBIOSTableData* table_data)
+{
+	assert(table_data != NULL);
+	
+	uint32_t smbios_buffer_index = 0;
+
+	uint8_t* data_buffer = table_data->smbios_buffer == NULL ? table_data->data->SMBIOSTableData : table_data->smbios_buffer;
+	const size_t data_size = table_data->data->Length;
+	
+	while (smbios_buffer_index < data_size)
+	{
+		struct _SMBIOSTable* table_info = (struct _SMBIOSTable*)malloc(sizeof(struct _SMBIOSTable));
+
+		if (table_info)
+		{
+			struct _SMBIOSTable** last_node = &(table_data)->table_list;
+			uint8_t* eof = NULL;
+
+			table_info->offset = smbios_buffer_index;
+			table_info->type = data_buffer[smbios_buffer_index];
+			table_info->data_size = data_buffer[smbios_buffer_index + 1];
+			table_info->real_size = table_info->data_size;
+			memset((void*)table_info->string_array, 0, sizeof(table_info->string_array));
+			table_info->next = NULL;
+
+			eof = data_buffer + smbios_buffer_index;
+
+			// in win32 16bit 0 is the eof label
+			while ((*(uint16_t*)(eof + table_info->real_size)) != 0)
+				++table_info->real_size;
+
+			table_info->real_size += 2;
+
+			smbios_collect_string_array(data_buffer, table_info);
+
+			smbios_buffer_index += table_info->real_size;
+
+			while (*last_node)
+				last_node = &(*last_node)->next;
+
+			*last_node = table_info;
+		}
+	}
+}
+
 void smbios_get_data_field(SMBIOSTableData* table_data, void** dst, uint8_t id)
 {
 	assert(table_data->table_index != NULL);
+
+	uint8_t* data_buffer = table_data->smbios_buffer == NULL ? table_data->data->SMBIOSTableData : table_data->smbios_buffer;
 	
-	*dst = table_data->smbios_buffer + table_data->table_index->offset + id;
+	*dst = data_buffer + table_data->table_index->offset + id;
 
 	assert(id > 0 && id < table_data->table_index->data_size);
 }
@@ -284,7 +432,9 @@ const char* smbios_get_string_field(SMBIOSTableData* table_data, uint8_t id)
 {
 	assert(id > 0 && id < table_data->table_index->data_size);
 
-	const size_t index = table_data->smbios_buffer[table_data->table_index->offset + id];
+	uint8_t* data_buffer = table_data->smbios_buffer == NULL ? table_data->data->SMBIOSTableData : table_data->smbios_buffer;
+	
+	const size_t index = data_buffer[table_data->table_index->offset + id];
 	
 	return table_data->table_index->string_array[index - 1];
 }
@@ -293,87 +443,10 @@ int HDC_CALLBACK_API hdc_smbios_init(SMBIOSTableData** table_data)
 {
 	*table_data = (SMBIOSTableData*)malloc(sizeof(SMBIOSTableData));
 
-	if (*table_data)
-	{
-		int enumerate_result = 0;
-		WbemStructure* wbem = NULL;
-
-		(*table_data)->table_list = NULL;
-		(*table_data)->table_index = NULL;
-
-		if (!wmi_init(&wbem))
-			return 0;
-
-		if (!wmi_execute_query(wbem, L"select * from MSSMBios_RawSMBiosTables"))
-			return 0;
-
-		enumerate_result = wmi_get_enumerate(wbem);
-
-		if (enumerate_result)
-		{
-			uint32_t smbios_buffer_index = 0;
-			struct tagVARIANT value;
-
-			wmi_get_result(wbem, L"SmbiosMajorVersion", &value, NULL);
-			(*table_data)->version_major = value.bVal;
-
-			wmi_get_result(wbem, L"SmbiosMinorVersion", &value, NULL);
-			(*table_data)->version_minor = value.bVal;
-
-			wmi_get_result(wbem, L"SMBiosData", &value, NULL);
-
-			assert((VT_UI1 | VT_ARRAY) == value.vt);
-
-			SAFEARRAY* safe_array = V_ARRAY(&value);
-
-			(*table_data)->smbios_buffer = (uint8_t*)(safe_array->pvData);
-			(*table_data)->smbios_buffer_size = safe_array->rgsabound[0].cElements;
-
-			while (smbios_buffer_index < (*table_data)->smbios_buffer_size)
-			{
-				struct _SMBIOSTable* table_info = (struct _SMBIOSTable*)malloc(sizeof(struct _SMBIOSTable));
-
-				if (table_info)
-				{
-					struct _SMBIOSTable** last_node = &(*table_data)->table_list;
-					uint8_t* eof = NULL;
-					
-					table_info->offset = smbios_buffer_index;
-					table_info->type = (*table_data)->smbios_buffer[smbios_buffer_index];
-					table_info->data_size = (*table_data)->smbios_buffer[smbios_buffer_index + 1];
-					table_info->real_size = table_info->data_size;
-					memset((void*)table_info->string_array, 0, sizeof(table_info->string_array));
-					table_info->next = NULL;
-
-					eof = (*table_data)->smbios_buffer + smbios_buffer_index;
-
-					// in win32 16bit 0 is the eof label
-					while ((*(uint16_t*)(eof + table_info->real_size)) != 0)
-						++table_info->real_size;
-
-					table_info->real_size += 2;
-
-					smbios_collect_string_array(*table_data, table_info);
-										
-					smbios_buffer_index += table_info->real_size;
-
-					while (*last_node)
-						last_node = &(*last_node)->next;
-
-					*last_node = table_info;					
-				}				
-			}
-		}
-
-		wmi_destroy(wbem);
-
-		return enumerate_result;
-	}
-
-	return 0;
+	return smbios_init_use_win32_api(table_data);
 }
 
-const char* __stdcall hdc_smbios_bios_vendor(SMBIOSTableData* table_data)
+const char* HDC_CALLBACK_API hdc_smbios_bios_vendor(SMBIOSTableData* table_data)
 {
 	assert(table_data != NULL);
 
@@ -383,7 +456,7 @@ const char* __stdcall hdc_smbios_bios_vendor(SMBIOSTableData* table_data)
 	return NULL;
 }
 
-const char* __stdcall hdc_smbios_bios_version(SMBIOSTableData* table_data)
+const char* HDC_CALLBACK_API hdc_smbios_bios_version(SMBIOSTableData* table_data)
 {
 	assert(table_data != NULL);
 
@@ -394,7 +467,7 @@ const char* __stdcall hdc_smbios_bios_version(SMBIOSTableData* table_data)
 
 }
 
-const char* __stdcall hdc_smbios_bios_release_date(SMBIOSTableData* table_data)
+const char* HDC_CALLBACK_API hdc_smbios_bios_release_date(SMBIOSTableData* table_data)
 {
 	assert(table_data != NULL);
 
@@ -433,7 +506,7 @@ const char* HDC_CALLBACK_API hdc_smbios_baseboard_manufacturer(SMBIOSTableData* 
 	return NULL;
 }
 
-const char* __stdcall hdc_smbios_baseboard_product(SMBIOSTableData* table_data)
+const char* HDC_CALLBACK_API hdc_smbios_baseboard_product(SMBIOSTableData* table_data)
 {
 	assert(table_data != NULL);
 
@@ -457,6 +530,8 @@ void HDC_CALLBACK_API hdc_smbios_destroy(SMBIOSTableData* table_data)
 
 		free(iterator);		
 	}
-
+	
+	free(table_data->data);
+	
 	free(table_data);
 }

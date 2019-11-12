@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 	SMBIOSTableData* data;
 
 	hdc_smbios_init(&data);
-
+	
 	printf("Base Board : %s ", hdc_smbios_baseboard_manufacturer(data));
 	printf("%s\n", hdc_smbios_baseboard_product(data));
 
