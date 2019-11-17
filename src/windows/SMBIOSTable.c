@@ -60,7 +60,7 @@ struct RawSMBIOSData
 	BYTE    SMBIOSTableData[1];
 };
 
-struct _SMBIOSTableData
+struct _hdc_smbios_table_data_t
 {
 	struct RawSMBIOSData* data;
 	
@@ -83,21 +83,21 @@ static int  wmi_get_result(WbemStructure* wmi_object, LPCWSTR field, struct tagV
 
 static void wmi_destroy(WbemStructure* wmi_object);
 
-static int smbios_init_use_wmi(SMBIOSTableData** table_data);
+static int smbios_init_use_wmi(hdc_smbios_table_data_t** table_data);
 
-static int smbios_init_use_win32_api(SMBIOSTableData** table_data);
+static int smbios_init_use_win32_api(hdc_smbios_table_data_t** table_data);
 
-static int smbios_find_first_target_type(SMBIOSTableData* table_data, uint8_t target_type);
+static int smbios_find_first_target_type(hdc_smbios_table_data_t* table_data, uint8_t target_type);
 
-static int smbios_find_next_target_type(SMBIOSTableData* table_data);
+static int smbios_find_next_target_type(hdc_smbios_table_data_t* table_data);
 
-static void smbios_get_data_field(SMBIOSTableData* table_data, void** dst, uint8_t id);
+static void smbios_get_data_field(hdc_smbios_table_data_t* table_data, void** dst, uint8_t id);
 
-static const char* smbios_get_string_field(SMBIOSTableData* table_data, uint8_t id);
+static const char* smbios_get_string_field(hdc_smbios_table_data_t* table_data, uint8_t id);
 
 static void smbios_collect_string_array(uint8_t* data_buffer, struct _SMBIOSTable* node);
 
-static void smbios_create_table_list(SMBIOSTableData* table_data);
+static void smbios_create_table_list(hdc_smbios_table_data_t* table_data);
 
 int wmi_init(WbemStructure** wmi_object)
 {
@@ -240,7 +240,7 @@ void wmi_destroy(WbemStructure* wmi_object)
 	kWMIInitialize = 0;
 }
 
-int smbios_init_use_wmi(SMBIOSTableData** table_data)
+int smbios_init_use_wmi(hdc_smbios_table_data_t** table_data)
 {
 	if (*table_data)
 	{
@@ -292,7 +292,7 @@ int smbios_init_use_wmi(SMBIOSTableData** table_data)
 	return 0;
 }
 
-int smbios_init_use_win32_api(SMBIOSTableData** table_data)
+int smbios_init_use_win32_api(hdc_smbios_table_data_t** table_data)
 {
 	if (*table_data)
 	{
@@ -324,7 +324,7 @@ int smbios_init_use_win32_api(SMBIOSTableData** table_data)
 	return 0;
 }
 
-int smbios_find_first_target_type(SMBIOSTableData* table_data, uint8_t target_type)
+int smbios_find_first_target_type(hdc_smbios_table_data_t* table_data, uint8_t target_type)
 {
 	assert(table_data != NULL);
 
@@ -344,7 +344,7 @@ int smbios_find_first_target_type(SMBIOSTableData* table_data, uint8_t target_ty
 	return 0;
 }
 
-int smbios_find_next_target_type(SMBIOSTableData* table_data)
+int smbios_find_next_target_type(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 
@@ -372,7 +372,7 @@ void smbios_collect_string_array(uint8_t* data_buffer, struct _SMBIOSTable* node
 	}
 }
 
-void smbios_create_table_list(SMBIOSTableData* table_data)
+void smbios_create_table_list(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 	
@@ -417,7 +417,7 @@ void smbios_create_table_list(SMBIOSTableData* table_data)
 	}
 }
 
-void smbios_get_data_field(SMBIOSTableData* table_data, void** dst, uint8_t id)
+void smbios_get_data_field(hdc_smbios_table_data_t* table_data, void** dst, uint8_t id)
 {
 	assert(table_data->table_index != NULL);
 
@@ -428,7 +428,7 @@ void smbios_get_data_field(SMBIOSTableData* table_data, void** dst, uint8_t id)
 	assert(id > 0 && id < table_data->table_index->data_size);
 }
 
-const char* smbios_get_string_field(SMBIOSTableData* table_data, uint8_t id)
+const char* smbios_get_string_field(hdc_smbios_table_data_t* table_data, uint8_t id)
 {
 	assert(id > 0 && id < table_data->table_index->data_size);
 
@@ -439,14 +439,14 @@ const char* smbios_get_string_field(SMBIOSTableData* table_data, uint8_t id)
 	return table_data->table_index->string_array[index - 1];
 }
 
-int HDC_CALLBACK_API hdc_smbios_init(SMBIOSTableData** table_data)
+int HDC_CALLBACK_API hdc_smbios_init(hdc_smbios_table_data_t** table_data)
 {
-	*table_data = (SMBIOSTableData*)malloc(sizeof(SMBIOSTableData));
+	*table_data = (hdc_smbios_table_data_t*)malloc(sizeof(hdc_smbios_table_data_t));
 
 	return smbios_init_use_win32_api(table_data);
 }
 
-const char* HDC_CALLBACK_API hdc_smbios_bios_vendor(SMBIOSTableData* table_data)
+const char* HDC_CALLBACK_API hdc_smbios_bios_vendor(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 
@@ -456,7 +456,7 @@ const char* HDC_CALLBACK_API hdc_smbios_bios_vendor(SMBIOSTableData* table_data)
 	return NULL;
 }
 
-const char* HDC_CALLBACK_API hdc_smbios_bios_version(SMBIOSTableData* table_data)
+const char* HDC_CALLBACK_API hdc_smbios_bios_version(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 
@@ -467,7 +467,7 @@ const char* HDC_CALLBACK_API hdc_smbios_bios_version(SMBIOSTableData* table_data
 
 }
 
-const char* HDC_CALLBACK_API hdc_smbios_bios_release_date(SMBIOSTableData* table_data)
+const char* HDC_CALLBACK_API hdc_smbios_bios_release_date(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 
@@ -477,7 +477,7 @@ const char* HDC_CALLBACK_API hdc_smbios_bios_release_date(SMBIOSTableData* table
 	return NULL;
 }
 
-int HDC_CALLBACK_API hdc_smbios_system_uuid(SMBIOSTableData* table_data, SMBIOS_UUID* uuid)
+int HDC_CALLBACK_API hdc_smbios_system_uuid(hdc_smbios_table_data_t* table_data, smbios_uuid_t* uuid)
 {
 	assert(table_data != NULL);
 	assert(sizeof(*uuid) == 16);
@@ -496,7 +496,7 @@ int HDC_CALLBACK_API hdc_smbios_system_uuid(SMBIOSTableData* table_data, SMBIOS_
 	return 0;
 }
 
-const char* HDC_CALLBACK_API hdc_smbios_baseboard_manufacturer(SMBIOSTableData* table_data)
+const char* HDC_CALLBACK_API hdc_smbios_baseboard_manufacturer(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 
@@ -506,7 +506,7 @@ const char* HDC_CALLBACK_API hdc_smbios_baseboard_manufacturer(SMBIOSTableData* 
 	return NULL;
 }
 
-const char* HDC_CALLBACK_API hdc_smbios_baseboard_product(SMBIOSTableData* table_data)
+const char* HDC_CALLBACK_API hdc_smbios_baseboard_product(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 
@@ -516,7 +516,7 @@ const char* HDC_CALLBACK_API hdc_smbios_baseboard_product(SMBIOSTableData* table
 	return NULL;
 }
 
-void HDC_CALLBACK_API hdc_smbios_destroy(SMBIOSTableData* table_data)
+void HDC_CALLBACK_API hdc_smbios_destroy(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 

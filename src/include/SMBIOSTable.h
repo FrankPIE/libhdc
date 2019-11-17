@@ -28,28 +28,68 @@
 extern "C" {
 #endif
 
-typedef struct _SMBIOSTableData SMBIOSTableData;
+typedef struct _hdc_smbios_table_data_t hdc_smbios_table_data_t;
 
-typedef struct _SMBIOS_UUID
+typedef struct _smbios_uuid_t
 {
 	uint8_t uuid[16];
-} SMBIOS_UUID;
+} smbios_uuid_t;
 
-int HDC_CALLBACK_API  hdc_smbios_init(SMBIOSTableData** table_data);
+/**
+ * \brief 
+ * \param table_data 
+ * \return 
+ */
+int HDC_CALLBACK_API  hdc_smbios_init(hdc_smbios_table_data_t** table_data);
 
-const char* HDC_CALLBACK_API hdc_smbios_bios_vendor(SMBIOSTableData* table_data);
+/**
+ * \brief 
+ * \param table_data 
+ * \return 
+ */
+const char* HDC_CALLBACK_API hdc_smbios_bios_vendor(hdc_smbios_table_data_t* table_data);
 
-const char* HDC_CALLBACK_API hdc_smbios_bios_version(SMBIOSTableData* table_data);
+/**
+ * \brief 
+ * \param table_data 
+ * \return 
+ */
+const char* HDC_CALLBACK_API hdc_smbios_bios_version(hdc_smbios_table_data_t* table_data);
 
-const char* HDC_CALLBACK_API hdc_smbios_bios_release_date(SMBIOSTableData* table_data);
+/**
+ * \brief 
+ * \param table_data 
+ * \return 
+ */
+const char* HDC_CALLBACK_API hdc_smbios_bios_release_date(hdc_smbios_table_data_t* table_data);
 
-int HDC_CALLBACK_API hdc_smbios_system_uuid(SMBIOSTableData* table_data, SMBIOS_UUID* uuid);
+/**
+ * \brief 
+ * \param table_data 
+ * \param uuid 
+ * \return 
+ */
+int HDC_CALLBACK_API hdc_smbios_system_uuid(hdc_smbios_table_data_t* table_data, smbios_uuid_t* uuid);
 
-const char* HDC_CALLBACK_API hdc_smbios_baseboard_manufacturer(SMBIOSTableData* table_data);
+/**
+ * \brief 
+ * \param table_data 
+ * \return 
+ */
+const char* HDC_CALLBACK_API hdc_smbios_baseboard_manufacturer(hdc_smbios_table_data_t* table_data);
 
-const char* HDC_CALLBACK_API hdc_smbios_baseboard_product(SMBIOSTableData* table_data);
+/**
+ * \brief 
+ * \param table_data 
+ * \return 
+ */
+const char* HDC_CALLBACK_API hdc_smbios_baseboard_product(hdc_smbios_table_data_t* table_data);
 
-void HDC_CALLBACK_API hdc_smbios_destroy(SMBIOSTableData* table_data);
+/**
+ * \brief 
+ * \param table_data 
+ */
+void HDC_CALLBACK_API hdc_smbios_destroy(hdc_smbios_table_data_t* table_data);
 
 #if defined(__cplusplus)
 }

@@ -22,14 +22,14 @@
 
 int main(int argc, char* argv[])
 {
-	SMBIOSTableData* data;
+	hdc_smbios_table_data_t* data;
 
 	hdc_smbios_init(&data);
 	
 	printf("Base Board : %s ", hdc_smbios_baseboard_manufacturer(data));
 	printf("%s\n", hdc_smbios_baseboard_product(data));
 
-	SMBIOS_UUID uuid;
+	smbios_uuid_t uuid;
 
 	hdc_smbios_system_uuid(data, &uuid);
 
