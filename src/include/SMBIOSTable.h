@@ -9,8 +9,6 @@
 
 #include <stdint.h>
 
-#include <HDCConfig.h>
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -27,28 +25,28 @@ typedef struct _smbios_uuid_t
  * \param table_data 
  * \return 
  */
-int HDC_CALLBACK_API  hdc_smbios_init(hdc_smbios_table_data_t** table_data);
+int hdc_smbios_init(hdc_smbios_table_data_t** table_data);
 
 /**
  * \brief 
  * \param table_data 
  * \return 
  */
-const char* HDC_CALLBACK_API hdc_smbios_bios_vendor(hdc_smbios_table_data_t* table_data);
+const char* hdc_smbios_bios_vendor(hdc_smbios_table_data_t* table_data);
 
 /**
  * \brief 
  * \param table_data 
  * \return 
  */
-const char* HDC_CALLBACK_API hdc_smbios_bios_version(hdc_smbios_table_data_t* table_data);
+const char* hdc_smbios_bios_version(hdc_smbios_table_data_t* table_data);
 
 /**
  * \brief 
  * \param table_data 
  * \return 
  */
-const char* HDC_CALLBACK_API hdc_smbios_bios_release_date(hdc_smbios_table_data_t* table_data);
+const char* hdc_smbios_bios_release_date(hdc_smbios_table_data_t* table_data);
 
 /**
  * \brief 
@@ -56,27 +54,27 @@ const char* HDC_CALLBACK_API hdc_smbios_bios_release_date(hdc_smbios_table_data_
  * \param uuid 
  * \return 
  */
-int HDC_CALLBACK_API hdc_smbios_system_uuid(hdc_smbios_table_data_t* table_data, smbios_uuid_t* uuid);
+int hdc_smbios_system_uuid(hdc_smbios_table_data_t* table_data, smbios_uuid_t* uuid);
 
 /**
  * \brief 
  * \param table_data 
  * \return 
  */
-const char* HDC_CALLBACK_API hdc_smbios_baseboard_manufacturer(hdc_smbios_table_data_t* table_data);
+const char* hdc_smbios_baseboard_manufacturer(hdc_smbios_table_data_t* table_data);
 
 /**
  * \brief 
  * \param table_data 
  * \return 
  */
-const char* HDC_CALLBACK_API hdc_smbios_baseboard_product(hdc_smbios_table_data_t* table_data);
+const char* hdc_smbios_baseboard_product(hdc_smbios_table_data_t* table_data);
 
 /**
  * \brief 
  * \param table_data 
  */
-void HDC_CALLBACK_API hdc_smbios_destroy(hdc_smbios_table_data_t* table_data);
+void hdc_smbios_destroy(hdc_smbios_table_data_t* table_data);
 
 #if defined(__cplusplus)
 }

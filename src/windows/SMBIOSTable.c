@@ -426,14 +426,14 @@ const char* smbios_get_string_field(hdc_smbios_table_data_t* table_data, uint8_t
 	return table_data->table_index->string_array[index - 1];
 }
 
-int HDC_CALLBACK_API hdc_smbios_init(hdc_smbios_table_data_t** table_data)
+int hdc_smbios_init(hdc_smbios_table_data_t** table_data)
 {
 	*table_data = (hdc_smbios_table_data_t*)malloc(sizeof(hdc_smbios_table_data_t));
 
 	return smbios_init_use_win32_api(table_data);
 }
 
-const char* HDC_CALLBACK_API hdc_smbios_bios_vendor(hdc_smbios_table_data_t* table_data)
+const char* hdc_smbios_bios_vendor(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 
@@ -443,7 +443,7 @@ const char* HDC_CALLBACK_API hdc_smbios_bios_vendor(hdc_smbios_table_data_t* tab
 	return NULL;
 }
 
-const char* HDC_CALLBACK_API hdc_smbios_bios_version(hdc_smbios_table_data_t* table_data)
+const char* hdc_smbios_bios_version(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 
@@ -454,7 +454,7 @@ const char* HDC_CALLBACK_API hdc_smbios_bios_version(hdc_smbios_table_data_t* ta
 
 }
 
-const char* HDC_CALLBACK_API hdc_smbios_bios_release_date(hdc_smbios_table_data_t* table_data)
+const char* hdc_smbios_bios_release_date(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 
@@ -464,7 +464,7 @@ const char* HDC_CALLBACK_API hdc_smbios_bios_release_date(hdc_smbios_table_data_
 	return NULL;
 }
 
-int HDC_CALLBACK_API hdc_smbios_system_uuid(hdc_smbios_table_data_t* table_data, smbios_uuid_t* uuid)
+int hdc_smbios_system_uuid(hdc_smbios_table_data_t* table_data, smbios_uuid_t* uuid)
 {
 	assert(table_data != NULL);
 	assert(sizeof(*uuid) == 16);
@@ -483,7 +483,7 @@ int HDC_CALLBACK_API hdc_smbios_system_uuid(hdc_smbios_table_data_t* table_data,
 	return 0;
 }
 
-const char* HDC_CALLBACK_API hdc_smbios_baseboard_manufacturer(hdc_smbios_table_data_t* table_data)
+const char* hdc_smbios_baseboard_manufacturer(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 
@@ -493,7 +493,7 @@ const char* HDC_CALLBACK_API hdc_smbios_baseboard_manufacturer(hdc_smbios_table_
 	return NULL;
 }
 
-const char* HDC_CALLBACK_API hdc_smbios_baseboard_product(hdc_smbios_table_data_t* table_data)
+const char* hdc_smbios_baseboard_product(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 
@@ -503,7 +503,7 @@ const char* HDC_CALLBACK_API hdc_smbios_baseboard_product(hdc_smbios_table_data_
 	return NULL;
 }
 
-void HDC_CALLBACK_API hdc_smbios_destroy(hdc_smbios_table_data_t* table_data)
+void hdc_smbios_destroy(hdc_smbios_table_data_t* table_data)
 {
 	assert(table_data != NULL);
 
