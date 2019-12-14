@@ -56,17 +56,3 @@ CONCRETE_METHOD_SET_VS_STARTUP_PROJECT(HardwareCollect)
 # CONCRETE_GEN_C_CXX_CONFIG_FILE(
 #     ${CONCRETE_BUILD_PATH}/HDCConfig.h
 # )
-
-# SET(HDC_SORUCE_DIR 
-#     src
-# )
-
-# CONCRETE_ADD_SUBDIRECTORY_WITH_FOLDER(
-#     ${HDC_SORUCE_DIR}
-#     "Library"
-# )
-
-# CONCRETE_ADD_SUBDIRECTORY_WITH_FOLDER(
-#     example
-#     "Example"
-# )

@@ -1,0 +1,13 @@
+{
+	"GPLv2-License": {
+		"prefix": "c-GPLv2",
+		"body": [
+			"/*",
+			"* Copyright (C) $CURRENT_YEAR MadStrawberry",
+			"* Distributed under the GNU GPL v2. For full terms see the file LICENSE",
+			"* License: http://www.gnu.org/licenses/gpl.html GPL version 2 or higher",
+			"*/"
+		],
+		"description": "GPLv2 License"
+	}
+}
