@@ -300,3 +300,6 @@ __pycache__/
 # End of https://www.gitignore.io/api/visualstudio
 
 build/
+.*/
+
+!.vscode/License-GPL-C.code-snippets

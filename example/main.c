@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-#include <SMBIOSTable.h>
+#include <smbios/smbios_table.h>
 
 int main(int argc, char* argv[])
 {

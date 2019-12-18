@@ -4,15 +4,15 @@
 * License: http://www.gnu.org/licenses/gpl.html GPL version 2 or higher
 */
 
-#include <SMBIOSTable.h>
+#include <smbios/smbios_table.h>
 
 #include <assert.h>
 
 #include <windows.h>
 #include <WbemIdl.h>
 
-#include <ComPtr.h>
-#include <SMBIOSType.h>
+#include <common/windows/com_ptr.h>
+#include <smbios/smbios_type.h>
 
 #pragma comment(lib, "WbemUuid.lib")
 
