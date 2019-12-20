@@ -7,18 +7,13 @@
 #ifndef _HDC_SMBIOS_TABLE_H_
 #define _HDC_SMBIOS_TABLE_H_
 
-#include <stdint.h>
+#include <common/uuid.h>
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 typedef struct _hdc_smbios_table_data_t hdc_smbios_table_data_t;
-
-typedef struct _smbios_uuid_t
-{
-	uint8_t uuid[16];
-} smbios_uuid_t;
 
 /**
  * \brief 
@@ -54,7 +49,7 @@ const char* hdc_smbios_bios_release_date(hdc_smbios_table_data_t* table_data);
  * \param uuid 
  * \return 
  */
-int hdc_smbios_system_uuid(hdc_smbios_table_data_t* table_data, smbios_uuid_t* uuid);
+int hdc_smbios_system_uuid(hdc_smbios_table_data_t* table_data, hdc_uuid_t* uuid);
 
 /**
  * \brief 

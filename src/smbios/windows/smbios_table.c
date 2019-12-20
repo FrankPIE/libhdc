@@ -464,7 +464,7 @@ const char* hdc_smbios_bios_release_date(hdc_smbios_table_data_t* table_data)
 	return NULL;
 }
 
-int hdc_smbios_system_uuid(hdc_smbios_table_data_t* table_data, smbios_uuid_t* uuid)
+int hdc_smbios_system_uuid(hdc_smbios_table_data_t* table_data, hdc_uuid_t* uuid)
 {
 	assert(table_data != NULL);
 	assert(sizeof(*uuid) == 16);
