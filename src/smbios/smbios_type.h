@@ -240,7 +240,7 @@
 /*				Memory Device: Form Factor field                        */
 /************************************************************************/
 #define SMBIOS_TABLE72_MEMORY_DEVICE_FF_OTHER        0x01
-#define SMBIOS_TABLE72_MEMORY_DEVICE_FF_UNKOWN       0x02
+#define SMBIOS_TABLE72_MEMORY_DEVICE_FF_UNKNOWN       0x02
 #define SMBIOS_TABLE72_MEMORY_DEVICE_FF_SIMM         0x03
 #define SMBIOS_TABLE72_MEMORY_DEVICE_FF_SIP          0x04
 #define SMBIOS_TABLE72_MEMORY_DEVICE_FF_CHIP         0x05
