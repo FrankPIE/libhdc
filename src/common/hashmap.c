@@ -11,6 +11,8 @@
 #include <common/hashmap.h>
 #include <string.h>
 #include <stdio.h>
+#include <assert.h>
+#include <stdbool.h>
 
 #define UNIVERSAL_HASH_P 49999ui32
  
@@ -46,9 +48,18 @@ struct _hash_map_t
 
 		struct _hash_item_t
 		{
+			uint32_t  hash;
 			value_t   value;
 		} *items;
 	} **list;
+};
+
+struct _hash_map_helper_t
+{
+	uint32_t hash;
+	uint32_t counter;
+
+	uint32_t hash_index;
 };
 
 key_t make_buffer_key(unsigned char* buffer, unsigned int size)
@@ -90,9 +101,68 @@ value_t make_string_value(const char* string)
 	return memory;
 }
 
+hash_map_item_t make_pair(key_t key, value_t value)
+{
+	const hash_map_item_t item = { key, value };
+
+	return item;
+}
+
+static void* make_array(uint32_t type_size, uint32_t array_size)
+{
+	const uint32_t size = type_size * array_size;
+	
+	void* array = malloc(size);
+
+	if (!array)
+		return NULL;
+
+	memset(array, 0, size);
+
+	return array;	
+}
+
+static void hash(struct _hash_list_t* list, uint32_t list_index, struct _hash_map_helper_t* helper, hash_map_item_t* items, uint32_t size)
+{
+	bool success = false;
+	
+	do
+	{		
+		uint32_t index = 0;
+
+		list->alpha = hash_alpha();
+		list->beta = hash_beta();
+
+		for (index = 0; index < size; ++index)
+		{
+			if (helper[index].hash_index == list_index)
+			{				
+				const uint32_t position = hash_function(helper[index].hash, list->size, list->alpha, list->beta);
+
+				assert(list->items[position].hash != helper[index].hash);
+
+				list->items[position].hash = helper[index].hash;
+
+				if (list->items[position].value != NULL)
+					continue;
+				
+				list->items[position].value = items[index].value;
+			}
+		}
+
+		success = true;
+	}
+	while (!success);
+}
+
 int hash_map_init(hash_map_t** hash_map, hash_map_item_t* items, unsigned int size)
 {	
 	unsigned int index = 0;
+
+	struct _hash_map_helper_t* helper = (struct _hash_map_helper_t*)make_array(sizeof(struct _hash_map_helper_t), size);
+
+	if (!helper)
+		return 0;
 
 	srand((unsigned)time(NULL));
 
@@ -105,59 +175,46 @@ int hash_map_init(hash_map_t** hash_map, hash_map_item_t* items, unsigned int si
 	(*hash_map)->beta = hash_beta();
 	(*hash_map)->size = size;
 
-	(*hash_map)->list = (struct _hash_list_t**)malloc(sizeof(struct _hash_list_t*) * size);
-
-	memset((*hash_map)->list, 0, sizeof(struct _hash_list_t*) * size);
-
-	int* counter = (int*)malloc(sizeof(int) * size);
-
-	memset(counter, 0, sizeof(int) * size);
-
-	uint32_t *hash_value = (unsigned int*)malloc(sizeof(uint32_t) * size);
-
-	memset(hash_value, 0, sizeof(uint32_t) * size);
-
-	if (!hash_value)
-		return 0;
-
+	(*hash_map)->list = (struct _hash_list_t**)make_array(sizeof(struct _hash_list_t*), size);
+	
 	for (index = 0; index < size; ++index)
 	{
 		uint32_t position;
 
-		hash_value[index] = crc32(items[index].key.buffer, items[index].key.buffer_size);
+		helper[index].hash = crc32(items[index].key.buffer, items[index].key.buffer_size);
 
-		position = hash_function(hash_value[index], (*hash_map)->size, (*hash_map)->alpha, (*hash_map)->beta);
+		position = hash_function(helper[index].hash, (*hash_map)->size, (*hash_map)->alpha, (*hash_map)->beta);
 
-		++counter[position];
+		++helper[position].counter;
+
+		helper[index].hash_index = position;
 	}
 
 	for (index = 0; index < size; ++index)
-	{		
-		uint32_t position;
-
-		if (counter[index] > 0)
-		{
+	{
+		if (helper[index].counter > 0)
+		{			
 			(*hash_map)->list[index] = (struct _hash_list_t*)malloc(sizeof(struct _hash_list_t));
 
-			(*hash_map)->list[index]->alpha = hash_alpha();
-			(*hash_map)->list[index]->beta = hash_beta();
-			(*hash_map)->list[index]->size = counter[index] * counter[index];
+			if ((*hash_map)->list[index])
+			{
+				(*hash_map)->list[index]->size = helper[index].counter * helper[index].counter;
 
-			(*hash_map)->list[index]->items = (struct _hash_item_t*)malloc(sizeof(struct _hash_item_t) * (*hash_map)->list[index]->size);
-
-			memset((*hash_map)->list[index]->items, 0, sizeof(struct _hash_item_t) * (*hash_map)->list[index]->size);
-
-			position = hash_function(hash_value[index], (*hash_map)->list[index]->size, (*hash_map)->list[index]->alpha, (*hash_map)->list[index]->beta);
-
-			(*hash_map)->list[index]->items[position].value = items[index].value;
+				(*hash_map)->list[index]->items = (struct _hash_item_t*)make_array(sizeof(struct _hash_item_t), (*hash_map)->list[index]->size);
+			}
 		}
 	}
 
-	if (counter)
-		free(counter);
-
-	if (hash_value)
-		free(hash_value);
+	for (index = 0; index < size; ++index)
+	{
+		if ((*hash_map)->list[index] != NULL)
+		{
+			hash((*hash_map)->list[index], index, helper, items, size);
+		}				
+	}
+	
+	if (helper)
+		free(helper);
 
 	return 1;
 }

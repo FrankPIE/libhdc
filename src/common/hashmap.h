@@ -31,6 +31,8 @@ value_t make_buffer_value(void* buffer, unsigned int size);
 
 value_t make_string_value(const char* string);
 
+hash_map_item_t make_pair(key_t key, value_t value);
+
 int hash_map_init(hash_map_t** hash_map, hash_map_item_t* items, unsigned int size);
 
 int hash_map_find(hash_map_t* hash_map, key_t key, value_t* value);
