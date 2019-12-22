@@ -3,26 +3,24 @@
 * Distributed under the GNU GPL v2. For full terms see the file LICENSE
 * License: http://www.gnu.org/licenses/gpl.html GPL version 2 or higher
 */
-#include <stddef.h>
+
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <common/hashmap.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 int main(int argc, char* argv[])
 {
 	hash_map_t* hash_map = NULL;
 
-	hash_map_item_t* table = (hash_map_item_t*)malloc(sizeof(hash_map_item_t) * 3);
-
-	if (table)
+	hash_map_item_t table[] = 
 	{
-		table[0] = make_pair(make_string_key("hello world!"), make_string_value("Hello World!"));
-		table[1] = make_pair(make_string_key("hello world?"), make_string_value("Hello World?"));
-		table[2] = make_pair(make_string_key("hello world#"), make_string_value("Hello World#"));
-	}
+		make_pair(make_string_key("hello world!"), make_string_value("Hello World!")),
+		make_pair(make_string_key("hello world?"), make_string_value("Hello World?")),
+		make_pair(make_string_key("hello world#"), make_string_value("Hello World#"))
+	};
 	
-	hash_map_init(&hash_map, table, 3);
+	hash_map_init(&hash_map, table, sizeof(table) / sizeof(hash_map_item_t));
 
 	key_t key = make_string_key("hello world!");
 
@@ -33,6 +31,4 @@ int main(int argc, char* argv[])
 	printf("find string %s", value);
 	
 	hash_map_destroy(hash_map);
-
-	free(table);
 }

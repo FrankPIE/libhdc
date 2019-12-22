@@ -7,13 +7,10 @@
 #ifndef _HDC_HASH_MAP_H_
 #define _HDC_HASH_MAP_H_
 
-typedef struct _key_t
-{
-	unsigned char* buffer;
-	unsigned int   buffer_size;
-} key_t;
+#include <stdint.h>
 
-typedef void* value_t;
+typedef uint32_t key_t;
+typedef void*	 value_t;
 
 typedef struct _hash_map_item_t
 {

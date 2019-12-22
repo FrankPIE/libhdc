@@ -4,15 +4,12 @@
 * License: http://www.gnu.org/licenses/gpl.html GPL version 2 or higher
 */
 
+#include <common/hashmap.h>
+
 #include <time.h>
 #include <stdlib.h>
-#include <stdint.h>
-
-#include <common/hashmap.h>
 #include <string.h>
-#include <stdio.h>
 #include <assert.h>
-#include <stdbool.h>
 
 #define UNIVERSAL_HASH_P 49999ui32
  
@@ -56,17 +53,13 @@ struct _hash_map_t
 
 struct _hash_map_helper_t
 {
-	uint32_t hash;
 	uint32_t counter;
-
 	uint32_t hash_index;
 };
 
 key_t make_buffer_key(unsigned char* buffer, unsigned int size)
-{
-	const key_t key = { buffer, size };
-	
-	return key;
+{		
+	return crc32(buffer, size);
 }
 
 key_t make_string_key(const char* string)
@@ -89,16 +82,15 @@ value_t make_buffer_value(void* buffer, unsigned int size)
 value_t make_string_value(const char* string)
 {
 	const size_t size = sizeof(char) * strlen(string);
-	
-	char* memory = (char*)malloc(size + 1);
 
+	char* memory = (char*)make_buffer_value((void*)string, size + 1);
+		
 	if (memory)
 	{
-		memcpy((void*)memory, string, size);
 		memset(memory + size, '\0', 1);
 	}
 	
-	return memory;
+	return (void*)memory;
 }
 
 hash_map_item_t make_pair(key_t key, value_t value)
@@ -124,7 +116,7 @@ static void* make_array(uint32_t type_size, uint32_t array_size)
 
 static void hash(struct _hash_list_t* list, uint32_t list_index, struct _hash_map_helper_t* helper, hash_map_item_t* items, uint32_t size)
 {
-	bool success = false;
+	int success = 0;
 	
 	do
 	{		
@@ -137,11 +129,11 @@ static void hash(struct _hash_list_t* list, uint32_t list_index, struct _hash_ma
 		{
 			if (helper[index].hash_index == list_index)
 			{				
-				const uint32_t position = hash_function(helper[index].hash, list->size, list->alpha, list->beta);
+				const uint32_t position = hash_function(items[index].key, list->size, list->alpha, list->beta);
 
-				assert(list->items[position].hash != helper[index].hash);
-
-				list->items[position].hash = helper[index].hash;
+				assert(list->items[position].hash != items[index].key);
+				
+				list->items[position].hash = items[index].key;
 
 				if (list->items[position].value != NULL)
 					continue;
@@ -150,7 +142,7 @@ static void hash(struct _hash_list_t* list, uint32_t list_index, struct _hash_ma
 			}
 		}
 
-		success = true;
+		success = 1;
 	}
 	while (!success);
 }
@@ -179,11 +171,7 @@ int hash_map_init(hash_map_t** hash_map, hash_map_item_t* items, unsigned int si
 	
 	for (index = 0; index < size; ++index)
 	{
-		uint32_t position;
-
-		helper[index].hash = crc32(items[index].key.buffer, items[index].key.buffer_size);
-
-		position = hash_function(helper[index].hash, (*hash_map)->size, (*hash_map)->alpha, (*hash_map)->beta);
+		const uint32_t position = hash_function(items[index].key, (*hash_map)->size, (*hash_map)->alpha, (*hash_map)->beta);
 
 		++helper[position].counter;
 
@@ -221,7 +209,7 @@ int hash_map_init(hash_map_t** hash_map, hash_map_item_t* items, unsigned int si
 
 int hash_map_find(hash_map_t* hash_map, key_t key, value_t* value)
 {
-	const uint32_t hash = crc32(key.buffer, key.buffer_size);
+	const uint32_t hash = key;
 
 	uint32_t index = hash_function(hash, hash_map->size, hash_map->alpha, hash_map->beta);
 
