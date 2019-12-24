@@ -38,4 +38,23 @@ TITLE CPUID Operator
  
         ret
     _cpuid endp
+
+    _cpuidex proc array:PTR DWORD
+        push esi
+
+        mov esi, array
+        mov eax, dword ptr [esi]
+        mov ecx, dword ptr [esi + 8]
+        cpuid
+
+        mov dword ptr [esi], eax
+        mov dword ptr [esi + 4], ebx
+        mov dword ptr [esi + 8], ecx
+        mov dword ptr [esi + 12], edx
+
+        pop esi
+ 
+        ret
+    _cpuidex endp
+
 end

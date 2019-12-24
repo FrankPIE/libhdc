@@ -4,7 +4,17 @@
 * License: http://www.gnu.org/licenses/gpl.html GPL version 2 or higher
 */
 
+#include <stdio.h>
+
 #include <cpuid/cpuid.h>
 
-extern void __cdecl _cpuid(unsigned int[4]);
+int main(int argc, char* argv[])
+{
+	cpuid_handle_t* handle = NULL;
 
+	hdc_cpuid_init(&handle);
+
+	printf("identify : %s", hdc_cpuid_identify(handle));
+	
+	hdc_cpuid_destroy(handle);
+}

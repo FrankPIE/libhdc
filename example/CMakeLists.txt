@@ -33,3 +33,15 @@ CONCRETE_METHOD_ADD_TARGET(
         PRIVATE
             $<TARGET_NAME:HDCExampleInterface>
 )
+
+CONCRETE_METHOD_ADD_TARGET(
+    TARGET_NAME 
+        CPUID
+    TYPE        
+        "Execute"
+    SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/cpuid_example/main.c
+    LINK_LIBRARIES
+        PRIVATE
+            $<TARGET_NAME:HDCExampleInterface>
+)
