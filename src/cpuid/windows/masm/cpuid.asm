@@ -23,6 +23,8 @@ TITLE CPUID Operator
     _cpuid_check endp
 
     _cpuid proc array:PTR DWORD
+        push esi
+
         mov esi, array
         mov eax, dword ptr [esi]
         cpuid
@@ -32,6 +34,8 @@ TITLE CPUID Operator
         mov dword ptr [esi + 8], ecx
         mov dword ptr [esi + 12], edx
 
+        pop esi
+ 
         ret
     _cpuid endp
 end
