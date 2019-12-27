@@ -5,6 +5,7 @@
 */
 
 #include <common/hashmap.h>
+#include <common/errorc.h>
 
 #include <time.h>
 #include <stdlib.h>
@@ -154,14 +155,14 @@ int hash_map_init(hash_map_t** hash_map, hash_map_item_t* items, unsigned int si
 	struct _hash_map_helper_t* helper = (struct _hash_map_helper_t*)make_array(sizeof(struct _hash_map_helper_t), size);
 
 	if (!helper)
-		return 0;
+		return HDC_EC_BAD_ALLOC;
 
-	srand((unsigned)time(NULL));
+	srand((unsigned int)time(NULL));
 
 	*hash_map = (hash_map_t*)malloc(sizeof(hash_map_t));
 
 	if (*hash_map == NULL)
-		return 0;
+		return HDC_EC_BAD_ALLOC;
 
 	(*hash_map)->alpha = hash_alpha();
 	(*hash_map)->beta = hash_beta();
