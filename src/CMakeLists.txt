@@ -1,14 +1,14 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.10.3)
+cmake_minimum_required(VERSION 3.10.3)
 
-SET(SRC_DIR ${CONCRETE_PROJECT_ROOT_DIRECTORY}src)
+set(SRC_DIR ${CONCRETE_PROJECT_ROOT_DIRECTORY}src)
 
-CONCRETE_METHOD_SOURCE_DIRECTORY_ANALYSE(
+concrete_source_directory_analyse(
     HDC ${SRC_DIR} 
     EXT h c asm
 )
 
 # common source group
-CONCRETE_METHOD_SOURCE_LIST(
+concrete_sources_list(
     HDC_COMMON_SOURCE_LIST
         SOURCES
             ${HDC_COMMON_SOURCES}
@@ -21,7 +21,7 @@ CONCRETE_METHOD_SOURCE_LIST(
 )
 
 # cpuid source group
-CONCRETE_METHOD_SOURCE_LIST(
+concrete_sources_list(
     HDC_CPUID_SOURCE_LIST
         SOURCES 
             ${HDC_CPUID_SOURCES}
@@ -34,7 +34,7 @@ CONCRETE_METHOD_SOURCE_LIST(
 )
 
 # smbios source group
-CONCRETE_METHOD_SOURCE_LIST(
+concrete_sources_list(
     HDC_SMBIOS_SOURCE_LIST
         SOURCES 
             ${HDC_SMBIOS_SOURCES}
@@ -46,7 +46,7 @@ CONCRETE_METHOD_SOURCE_LIST(
             ${HDC_SMBIOS_WINDOWS_DIR_NAME}
 )
 
-CONCRETE_METHOD_ADD_TARGET(
+concrete_target(
     TARGET_NAME 
         libhdc
     TYPE        
@@ -60,10 +60,10 @@ CONCRETE_METHOD_ADD_TARGET(
             ${SRC_DIR}
 )
 
-IF(MSVC)
-    SET_SOURCE_FILES_PROPERTIES(
+if(MSVC)
+    set_source_files_properties(
         ${SRC_DIR}/cpuid/windows/masm/cpuid.asm
         PROPERTIES
             COMPILE_FLAGS "/safeseh /Fo$(IntDir)cpuid.asm.obj"
     )
-ENDIF(MSVC)
+endif(MSVC)
