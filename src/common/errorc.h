@@ -13,5 +13,13 @@
 #define HDC_EC_CPUID_SERIAL_NUMBER_NOT_SUPPORT			(-3)
 #define HDC_EC_ERROR_PARAMETER							(-4)
 #define HDC_EC_TOO_OLD_CPU_PRODUCT						(-5)
+#define HDC_EC_UNDEFINED								(-6)
+
+
+void error_map_init();
+
+const char* error_information(int error_code);
+
+void error_map_destroy();
 
 #endif

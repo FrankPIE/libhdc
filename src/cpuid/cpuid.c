@@ -19,8 +19,6 @@
 extern bool		   cpuid_flag_check();
 extern void		   cpuid(uint32_t registers[4], uint32_t function_id);
 
-extern const char* error_information(int error_code);
-
 /* ***********************implement*********************** */
 
 hash_map_t* cpuid_vendor_table()

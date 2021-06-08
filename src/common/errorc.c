@@ -11,12 +11,12 @@
 
 static hash_map_t* kErrorCodeMap = NULL;
 
-extern void error_map_destroy()
+void error_map_destroy()
 {
 	hash_map_destroy(kErrorCodeMap);
 }
 
-extern void error_map_init()
+void error_map_init()
 {
 #define MakeErrorCodeDecrement (--error_code, sizeof(int))
 
@@ -32,7 +32,8 @@ extern void error_map_init()
 		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("no cpuid instruct support")),
 		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("no cpuid serial number support")),
 		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("function call with error parameter")),
-		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("too old cpu product to support"))
+		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("too old cpu product to support")),
+		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("undefined error"))
 	};
 
 	hash_map_init(&kErrorCodeMap, table, sizeof(table) / sizeof(hash_map_item_t));
@@ -40,7 +41,7 @@ extern void error_map_init()
 #undef MakeErrorCodeDecrement
 }
 
-extern const char* error_information(int error_code)
+const char* error_information(int error_code)
 {
 	char* value = NULL;
 	

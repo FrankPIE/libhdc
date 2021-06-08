@@ -52,4 +52,4 @@ concrete_add_subdirectory(
         "Example"
 )
 
-concrete_set_vs_startup_project(CPUID)
+concrete_set_vs_startup_project(HDCExample)

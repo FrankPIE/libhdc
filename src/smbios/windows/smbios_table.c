@@ -86,6 +86,8 @@ static void smbios_collect_string_array(uint8_t* data_buffer, struct _SMBIOSTabl
 
 static void smbios_create_table_list(hdc_smbios_table_data_t* table_data);
 
+static void smbios_uuid_swap(unsigned char* lhs, unsigned char* rhs);
+
 int wmi_init(WbemStructure** wmi_object)
 {
 	HRESULT hr = S_OK;
@@ -404,6 +406,16 @@ void smbios_create_table_list(hdc_smbios_table_data_t* table_data)
 	}
 }
 
+void smbios_uuid_swap(unsigned char* lhs, unsigned char* rhs)
+{
+	assert(left != NULL && right != NULL);
+
+	const unsigned char temp = *lhs;
+	
+	*lhs = *rhs;
+	*rhs = temp;
+}
+
 void smbios_get_data_field(hdc_smbios_table_data_t* table_data, void** dst, uint8_t id)
 {
 	assert(table_data->table_index != NULL);
@@ -476,6 +488,11 @@ int hdc_smbios_system_uuid(hdc_smbios_table_data_t* table_data, hdc_uuid_t* uuid
 		smbios_get_data_field(table_data, (void**)&uuid_data_buffer, SMBIOS_TYPE1_UUID_16BYTE);
 
 		memcpy(uuid->uuid, uuid_data_buffer, sizeof(*uuid));
+
+		smbios_uuid_swap(uuid->uuid, uuid->uuid + 3);
+		smbios_uuid_swap(uuid->uuid + 1, uuid->uuid + 2);
+		smbios_uuid_swap(uuid->uuid + 4, uuid->uuid + 5);
+		smbios_uuid_swap(uuid->uuid + 6, uuid->uuid + 7);
 
 		return 1;
 	}

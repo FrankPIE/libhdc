@@ -7,6 +7,12 @@ concrete_source_directory_analyse(
     EXT h c asm
 )
 
+concrete_sources_list(
+    HDC_SOURCES
+        SOURCES
+            ${HDC_ROOT_SOURCES}
+)
+
 # common source group
 concrete_sources_list(
     HDC_COMMON_SOURCE_LIST
@@ -50,6 +56,7 @@ concrete_target(
     libhdc "Shared"
 
     SOURCES
+        ${HDC_SOURCES}
         ${HDC_COMMON_SOURCE_LIST}
         ${HDC_CPUID_SOURCE_LIST}
         ${HDC_SMBIOS_SOURCE_LIST}
@@ -59,10 +66,10 @@ concrete_target(
 )
 
 if(MSVC) 
+    set(flags "/Fo$(IntDir)cpuid.asm.obj")
+
     if (${CONCRETE_PROJECT_COMPILER_TARGET} STREQUAL "x86")
-        set(flags "/safeseh  /Fo$(IntDir)cpuid.asm.obj")        
-    else()
-        set(flags "/Fo$(IntDir)cpuid.asm.obj")        
+        string(APPEND flags " /safeseh")
     endif()
 
     set_source_files_properties(        
