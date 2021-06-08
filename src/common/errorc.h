@@ -15,7 +15,6 @@
 #define HDC_EC_TOO_OLD_CPU_PRODUCT						(-5)
 #define HDC_EC_UNDEFINED								(-6)
 
-
 void error_map_init();
 
 const char* error_information(int error_code);

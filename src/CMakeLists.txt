@@ -63,6 +63,11 @@ concrete_target(
 
     INCLUDE_DIRECTORIES
         PUBLIC ${SRC_DIR}
+
+    COMPILE_OPTIONS 
+        PRIVATE 
+            $<$<C_COMPILER_ID:MSVC>:$<$<CONFIG:Debug>:-MTd>>
+            $<$<C_COMPILER_ID:MSVC>:$<$<CONFIG:Release>:-MT>>
 )
 
 if(MSVC) 

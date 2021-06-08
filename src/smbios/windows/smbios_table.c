@@ -408,7 +408,7 @@ void smbios_create_table_list(hdc_smbios_table_data_t* table_data)
 
 void smbios_uuid_swap(unsigned char* lhs, unsigned char* rhs)
 {
-	assert(left != NULL && right != NULL);
+	assert(lhs != NULL && rhs != NULL);
 
 	const unsigned char temp = *lhs;
 	

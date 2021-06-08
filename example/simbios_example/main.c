@@ -19,10 +19,6 @@ int main(int argc, char* argv[])
 	//printf("Base Board : %s ", hdc_smbios_baseboard_manufacturer(data));
 	//printf("%s\n", hdc_smbios_baseboard_product(data));
 
-	//hdc_uuid_t uuid;
-
-	//hdc_smbios_system_uuid(data, &uuid);
-
 	unsigned char uuid[16];
 	hdc_system_uuid(handle, uuid);
 
