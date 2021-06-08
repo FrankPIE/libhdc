@@ -46,24 +46,27 @@ concrete_sources_list(
             ${HDC_SMBIOS_WINDOWS_DIR_NAME}
 )
 
-concrete_target(
-    TARGET_NAME 
-        libhdc
-    TYPE        
-        "Static"
+concrete_target(     
+    libhdc "Shared"
+
     SOURCES
         ${HDC_COMMON_SOURCE_LIST}
         ${HDC_CPUID_SOURCE_LIST}
         ${HDC_SMBIOS_SOURCE_LIST}
+
     INCLUDE_DIRECTORIES
-        PUBLIC
-            ${SRC_DIR}
+        PUBLIC ${SRC_DIR}
 )
 
-if(MSVC)
-    set_source_files_properties(
+if(MSVC) 
+    if (${CONCRETE_PROJECT_COMPILER_TARGET} STREQUAL "x86")
+        set(flags "/safeseh  /Fo$(IntDir)cpuid.asm.obj")        
+    else()
+        set(flags "/Fo$(IntDir)cpuid.asm.obj")        
+    endif()
+
+    set_source_files_properties(        
         ${SRC_DIR}/cpuid/windows/masm/cpuid.asm
-        PROPERTIES
-            COMPILE_FLAGS "/safeseh /Fo$(IntDir)cpuid.asm.obj"
+        PROPERTIES COMPILE_FLAGS ${flags}
     )
 endif(MSVC)

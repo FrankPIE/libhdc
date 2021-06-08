@@ -302,4 +302,6 @@ __pycache__/
 build/
 .*/
 
+!src/cpuid/**/x64/
+!src/cpuid/**/x86/
 !.vscode/License-GPL-C.code-snippets

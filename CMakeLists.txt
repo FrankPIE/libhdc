@@ -8,8 +8,8 @@ include(Concrete)
 project(${CONCRETE_PROJECT_DEFAULT_PARAMETER})
 
 concrete_project(
-    NAME         libhdc
-    VERSION      1 1 0
+    libhdc
+    VERSION      1 1 0 0
     DESCRIPTION  "hardware information collect library"
     HOMEPAGE_URL "https://github.com/FrankPIE/SMBIOS"
     LANGUAGES    C ASM_MASM
@@ -19,7 +19,14 @@ concrete_project(
     ROOT_DIR            ${CMAKE_HOME_DIRECTORY}/
     BINARY_OUTPUT_DIR   ${CMAKE_HOME_DIRECTORY}/bin
     LIBRARY_OUTPUT_DIR  ${CMAKE_HOME_DIRECTORY}/lib
-    WITH_COMPILER_TARGET_SUBDIR
+    WITH_COMPILER_TARGET_POSTFIX
+)
+
+concrete_option(HDC_PACKAGE_VERBOSE "option for package verbose" ON)
+
+concrete_set_package_manager_properties(
+    VERBOSE  ${HDC_PACKAGE_VERBOSE}
+    BASE_DIR ${CMAKE_BINARY_DIR}/.3rd
 )
 
 concrete_set_global_properties(
@@ -29,8 +36,8 @@ concrete_set_global_properties(
 )
 
 concrete_global_target_configure(
-    INCLUDE_DIRECTORIES 
-        ${CMAKE_BINARY_DIR}
+    INCLUDE_DIRECTORIES ${CMAKE_BINARY_DIR}
+    COMPILE_DEFINITIONS $<$<STREQUAL:"${CONCRETE_PROJECT_COMPILER_TARGET}","x64">:MASM64>       
 )
 
 concrete_add_subdirectory(

@@ -1,12 +1,19 @@
 TITLE CPUID Operator
 
+ifndef MASM64
 .model flat, c
+.686p
+endif
  	
 .data
+ifndef MASM64
     extern kCPUIDFlag:DWORD
+else
+    extern kCPUIDFlag:QWORD
+endif
 
 .code
-.686p
+ifndef MASM64
     _cpuid_check proc
         pushfd                            ; push original EFLAGS 
         pop eax                           ; get original EFLAGS
@@ -56,5 +63,55 @@ TITLE CPUID Operator
  
         ret
     _cpuidex endp
+else
+    _cpuid_check proc
+        pushfq                            ; push original EFLAGS 
+        pop rax                           ; get original EFLAGS
+        mov rcx, rax                      ; copy original EFLAGS
+        xor rax, 200000h                  ; flip ID bit in EFLAGS
+        push rax                          ; save new EFLAGS value on stack
+        popfq                             ; replace current EFLAGS value
+        pushfq                            ; get new EFLAGS
+        pop rax                           ; get new EFLAGS
+        xor rax, rcx                      ; ID bit check, can't toggle
+        and rax, 200000h                  
+        mov kCPUIDFlag, rax
+        ret
+    _cpuid_check endp
 
+    _cpuid proc array:PTR QWORD
+        push rsi
+
+        mov rsi, array
+        mov rax, qword ptr [rsi]
+        cpuid
+
+        mov qword ptr [rsi], rax
+        mov qword ptr [rsi + 8], rbx
+        mov qword ptr [rsi + 16], rcx
+        mov qword ptr [rsi + 24], rdx
+
+        pop rsi
+ 
+        ret
+    _cpuid endp
+
+    _cpuidex proc array:PTR QWORD
+        push rsi
+
+        mov rsi, array
+        mov rax, qword ptr [rsi]
+        mov rcx, qword ptr [rsi + 16]
+        cpuid
+
+        mov qword ptr [rsi], rax
+        mov qword ptr [rsi + 8], rbx
+        mov qword ptr [rsi + 16], rcx
+        mov qword ptr [rsi + 24], rdx
+
+        pop rsi
+ 
+        ret
+    _cpuidex endp
+endif
 end

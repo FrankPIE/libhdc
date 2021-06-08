@@ -30,7 +30,9 @@ extern void error_map_init()
 		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("execute success")),
 		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("bad alloc memory")),
 		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("no cpuid instruct support")),
-		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("no cpuid serial number support"))
+		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("no cpuid serial number support")),
+		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("function call with error parameter")),
+		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("too old cpu product to support"))
 	};
 
 	hash_map_init(&kErrorCodeMap, table, sizeof(table) / sizeof(hash_map_item_t));
