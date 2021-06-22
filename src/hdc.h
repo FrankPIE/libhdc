@@ -21,6 +21,16 @@ LIBHDC_API int LIBHDC_CALL hdc_init(hdc_handle_t** handle);
 
 LIBHDC_API int LIBHDC_CALL hdc_system_uuid(hdc_handle_t* handle, unsigned char uuid[16]);
 
+LIBHDC_API int LIBHDC_CALL hdc_baseboard_manufacturer(hdc_handle_t* handle, const char** value);
+
+LIBHDC_API int LIBHDC_CALL hdc_baseboard_product(hdc_handle_t* handle, const char** value);
+
+LIBHDC_API int LIBHDC_CALL hdc_bios_vendor(hdc_handle_t* handle, const char** value);
+
+LIBHDC_API int LIBHDC_CALL hdc_bios_version(hdc_handle_t* handle, const char** value);
+
+LIBHDC_API int LIBHDC_CALL hdc_bios_release_date(hdc_handle_t* handle, const char** value);
+
 LIBHDC_API const char* LIBHDC_CALL hdc_error_message(int errorc);
 
 LIBHDC_API int LIBHDC_CALL hdc_destroy(hdc_handle_t* handle);

@@ -50,6 +50,71 @@ int LIBHDC_CALL hdc_system_uuid(hdc_handle_t* handle, unsigned char uuid[16])
 	return HDC_SUCCESS;
 }
 
+int hdc_baseboard_manufacturer(hdc_handle_t* handle, const char** value)
+{
+	assert(handle != NULL && handle->smbios_table);
+
+	*value = hdc_smbios_baseboard_manufacturer(handle->smbios_table);
+
+	// TODO::
+	if (*value == NULL)
+		return HDC_EC_UNDEFINED;
+
+	return HDC_SUCCESS;
+}
+
+int hdc_baseboard_product(hdc_handle_t* handle, const char** value)
+{
+	assert(handle != NULL && handle->smbios_table);
+
+	*value = hdc_smbios_baseboard_product(handle->smbios_table);
+
+	// TODO::
+	if (*value == NULL)
+		return HDC_EC_UNDEFINED;
+
+	return HDC_SUCCESS;
+}
+
+int hdc_bios_vendor(hdc_handle_t* handle, const char** value)
+{
+	assert(handle != NULL && handle->smbios_table);
+
+	*value = hdc_smbios_bios_vendor(handle->smbios_table);
+
+	// TODO::
+	if (*value == NULL)
+		return HDC_EC_UNDEFINED;
+
+	return HDC_SUCCESS;
+}
+
+int hdc_bios_version(hdc_handle_t* handle, const char** value)
+{
+	assert(handle != NULL && handle->smbios_table);
+
+	*value = hdc_smbios_bios_version(handle->smbios_table);
+
+	// TODO::
+	if (*value == NULL)
+		return HDC_EC_UNDEFINED;
+
+	return HDC_SUCCESS;
+}
+
+int hdc_bios_release_date(hdc_handle_t* handle, const char** value)
+{
+	assert(handle != NULL && handle->smbios_table);
+
+	*value = hdc_smbios_bios_release_date(handle->smbios_table);
+
+	// TODO::
+	if (*value == NULL)
+		return HDC_EC_UNDEFINED;
+
+	return HDC_SUCCESS;
+}
+
 const char* LIBHDC_CALL hdc_error_message(int errorc)
 {
 	return error_information(errorc);
