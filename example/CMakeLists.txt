@@ -12,29 +12,9 @@ concrete_target(
     HDCExample "Execute"
 
     SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/simbios_example/main.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/main.c
 
     LINK_LIBRARIES
         PRIVATE
             HDCExampleInterface
 )
-
-# concrete_target(
-#     HashMap "Execute"
-
-#     SOURCES
-#         ${CMAKE_CURRENT_SOURCE_DIR}/hashmap_example/main.c
-#     LINK_LIBRARIES
-#         PRIVATE
-#             HDCExampleInterface
-# )
-
-# concrete_target(
-#     CPUID "Execute"
-    
-#     SOURCES
-#         ${CMAKE_CURRENT_SOURCE_DIR}/cpuid_example/main.c
-#     LINK_LIBRARIES
-#         PRIVATE
-#             HDCExampleInterface
-# )

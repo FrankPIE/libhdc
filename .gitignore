@@ -299,9 +299,6 @@ __pycache__/
 
 # End of https://www.gitignore.io/api/visualstudio
 
-build/
 .*/
-
-!src/cpuid/**/x64/
-!src/cpuid/**/x86/
+/example/*/
 !.vscode/License-GPL-C.code-snippets
