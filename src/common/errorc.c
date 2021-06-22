@@ -33,7 +33,9 @@ void error_map_init()
 		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("no cpuid serial number support")),
 		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("function call with error parameter")),
 		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("too old cpu product to support")),
-		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("undefined error"))
+		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("undefined error")),
+		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("create device handle failed")),
+		make_pair(make_buffer_key((unsigned char*)&error_code, MakeErrorCodeDecrement), make_string_value("invalid device handle"))		
 	};
 
 	hash_map_init(&kErrorCodeMap, table, sizeof(table) / sizeof(hash_map_item_t));

@@ -7,6 +7,8 @@
 #ifndef _HDC_H_
 #define _HDC_H_
 
+#include <hdc_type.h>
+
 #ifdef libhdc_EXPORTS
 #define LIBHDC_API _declspec(dllexport)
 #else
@@ -14,8 +16,6 @@
 #endif
 
 #define LIBHDC_CALL __stdcall
-
-typedef struct _hdc_handle_t hdc_handle_t;
 
 LIBHDC_API int LIBHDC_CALL hdc_init(hdc_handle_t** handle);
 

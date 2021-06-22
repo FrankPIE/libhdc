@@ -14,6 +14,10 @@
 #define HDC_EC_ERROR_PARAMETER							(-4)
 #define HDC_EC_TOO_OLD_CPU_PRODUCT						(-5)
 #define HDC_EC_UNDEFINED								(-6)
+#define HDC_EC_CREATE_DEVICE_HANDLE_FAILED				(-7)
+#define HDC_EC_INVALID_DEVICE_HANDLE				    (-8)
+#define HDC_EC_READ_FAILED								(-9)
+#define HDC_EC_WRITE_FAILED								(-10)
 
 void error_map_init();
 

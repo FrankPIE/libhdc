@@ -52,6 +52,19 @@ concrete_sources_list(
             ${HDC_SMBIOS_WINDOWS_DIR_NAME}
 )
 
+# rs232 source group
+concrete_sources_list(
+    HDC_SERIAL_SOURCE_LIST
+        SOURCES 
+            ${HDC_SERIAL_SOURCES}
+        SOURCES_FOLDER
+            ${HDC_SERIAL_DIR_NAME}
+        MSVC_SOURCES 
+            ${HDC_SERIAL_WINDOWS_SOURCES}
+        MSVC_SOURCES_FOLDER
+            ${HDC_SERIAL_WINDOWS_DIR_NAME}
+)
+
 concrete_target(     
     libhdc "Shared"
 
@@ -60,6 +73,7 @@ concrete_target(
         ${HDC_COMMON_SOURCE_LIST}
         ${HDC_CPUID_SOURCE_LIST}
         ${HDC_SMBIOS_SOURCE_LIST}
+        ${HDC_SERIAL_SOURCE_LIST}
 
     INCLUDE_DIRECTORIES
         PUBLIC ${SRC_DIR}
