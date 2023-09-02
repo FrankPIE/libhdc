@@ -9,6 +9,10 @@
 
 #include <hdc_type.h>
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 #ifdef libhdc_EXPORTS
 #define LIBHDC_API _declspec(dllexport)
 #else
@@ -34,5 +38,9 @@ LIBHDC_API int LIBHDC_CALL hdc_bios_release_date(hdc_handle_t* handle, const cha
 LIBHDC_API const char* LIBHDC_CALL hdc_error_message(int errorc);
 
 LIBHDC_API int LIBHDC_CALL hdc_destroy(hdc_handle_t* handle);
+
+#if defined(__cplusplus)
+}
+#endif
 
 #endif

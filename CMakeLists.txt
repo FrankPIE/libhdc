@@ -11,7 +11,7 @@ concrete_project(
     libhdc
     VERSION      1 1 0 0
     DESCRIPTION  "hardware information collect library"
-    HOMEPAGE_URL "https://github.com/FrankPIE/SMBIOS"
+    HOMEPAGE_URL "https://github.com/FrankPIE/libhdc"
     LANGUAGES    C ASM_MASM
 
     CONFIGURATION_TYPES Debug Release

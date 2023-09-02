@@ -65,6 +65,19 @@ concrete_sources_list(
             ${HDC_SERIAL_WINDOWS_DIR_NAME}
 )
 
+# os source group
+concrete_sources_list(
+    HDC_OS_SOURCE_LIST
+        SOURCES 
+            ${HDC_OS_SOURCES}
+        SOURCES_FOLDER
+            ${HDC_OS_DIR_NAME}
+        MSVC_SOURCES 
+            ${HDC_OS_WINDOWS_SOURCES}
+        MSVC_SOURCES_FOLDER
+            ${HDC_OS_WINDOWS_DIR_NAME}
+)
+
 concrete_target(     
     libhdc "Shared"
 
@@ -74,6 +87,7 @@ concrete_target(
         ${HDC_CPUID_SOURCE_LIST}
         ${HDC_SMBIOS_SOURCE_LIST}
         ${HDC_SERIAL_SOURCE_LIST}
+        ${HDC_OS_SOURCE_LIST}
 
     INCLUDE_DIRECTORIES
         PUBLIC ${SRC_DIR}
